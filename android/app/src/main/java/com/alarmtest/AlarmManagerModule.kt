@@ -21,6 +21,7 @@ class AlarmManagerModule(reactContext: ReactApplicationContext) : ReactContextBa
             
             // Create intent for the alarm receiver
             val intent = Intent(context, AlarmReceiver::class.java).apply {
+                action = AlarmReceiver.ACTION_SCHEDULED_ALARM
                 putExtra(AlarmReceiver.EXTRA_ALARM_ID, alarmId)
                 putExtra(AlarmReceiver.EXTRA_ALARM_TITLE, title)
             }
@@ -115,6 +116,65 @@ class AlarmManagerModule(reactContext: ReactApplicationContext) : ReactContextBa
             }
         } catch (e: Exception) {
             Log.e("AlarmManagerModule", "Error requesting exact alarm permission", e)
+        }
+    }
+    
+    @ReactMethod
+    fun stopCurrentAlarm() {
+        try {
+            Log.d("AlarmManagerModule", "🛑 Stopping current alarm from React Native")
+            
+            val stopIntent = Intent(reactApplicationContext, AlarmReceiver::class.java).apply {
+                action = AlarmReceiver.ACTION_STOP_ALARM
+            }
+            
+            reactApplicationContext.sendBroadcast(stopIntent)
+            
+            Log.d("AlarmManagerModule", "✅ Stop alarm broadcast sent")
+        } catch (e: Exception) {
+            Log.e("AlarmManagerModule", "❌ Error stopping current alarm", e)
+        }
+    }
+    
+    @ReactMethod
+    fun triggerImmediateAlarm(alarmId: String, title: String, promise: Promise) {
+        try {
+            Log.d("AlarmManagerModule", "🚨 TRIGGERING IMMEDIATE ALARM from background handler")
+            Log.d("AlarmManagerModule", "Alarm ID: $alarmId, Title: $title")
+            
+            val context = reactApplicationContext
+            
+            // Direct call to AlarmReceiver for immediate response
+            val directIntent = Intent(context, AlarmReceiver::class.java).apply {
+                action = AlarmReceiver.ACTION_FIREBASE_ALARM
+                putExtra(AlarmReceiver.EXTRA_ALARM_ID, alarmId)
+                putExtra(AlarmReceiver.EXTRA_ALARM_TITLE, title)
+                addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+            }
+            
+            // Send broadcast to trigger alarm
+            context.sendBroadcast(directIntent)
+            Log.d("AlarmManagerModule", "✅ Immediate alarm broadcast sent")
+            
+            // ALSO start foreground service for maximum reliability
+            val serviceIntent = Intent(context, AlarmForegroundService::class.java).apply {
+                action = AlarmForegroundService.ACTION_START_ALARM
+                putExtra(AlarmForegroundService.EXTRA_ALARM_ID, alarmId)
+                putExtra(AlarmForegroundService.EXTRA_ALARM_TITLE, title)
+            }
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(serviceIntent)
+            } else {
+                context.startService(serviceIntent)
+            }
+            Log.d("AlarmManagerModule", "✅ Foreground service started for immediate alarm")
+            
+            promise.resolve("Immediate alarm triggered successfully")
+            
+        } catch (e: Exception) {
+            Log.e("AlarmManagerModule", "❌ Error triggering immediate alarm", e)
+            promise.reject("IMMEDIATE_ALARM_ERROR", "Failed to trigger immediate alarm: ${e.message}")
         }
     }
 }

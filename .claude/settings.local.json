@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(./gradlew:*)",
+      "Bash(npx:*)",
+      "Bash(npm run android:*)",
+      "Bash(sudo rm:*)",
+      "Bash(yarn android:*)",
+      "Bash(yarn remove:*)",
+      "Bash(yarn add:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(./android/gradlew:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

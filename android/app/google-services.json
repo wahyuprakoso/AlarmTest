@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "377936968303",
+    "project_id": "alarmtest-b2530",
+    "storage_bucket": "alarmtest-b2530.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:377936968303:android:c96ce4b87cccd06c76ab9a",
+        "android_client_info": {
+          "package_name": "com.alarmtest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjf_Y9bG05Lhn6eOQmbotlyfyP8BQSpwM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

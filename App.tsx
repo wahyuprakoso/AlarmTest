@@ -1,14 +1,11 @@
 import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AlarmProvider } from './src/context/AlarmContext';
-import HomeScreen from './src/screens/HomeScreen';
+import TokenScreen from './src/screens/TokenScreen';
 
 function App() {
   return (
     <SafeAreaProvider>
-      <AlarmProvider>
-        <HomeScreen />
-      </AlarmProvider>
+      <TokenScreen />
     </SafeAreaProvider>
   );
 }
